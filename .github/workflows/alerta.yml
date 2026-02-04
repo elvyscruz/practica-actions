@@ -1,0 +1,16 @@
+name: Notificación ntfy.sh
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enviar alerta a ntfy
+        run: |
+          curl -d "🚀 ¡Nuevo push en el repositorio! El código se ha subido a la rama main." \
+               -H "Title: GitHub Alert - ${{ github.repository }}" \
+               ntfy.sh/devops-itla
