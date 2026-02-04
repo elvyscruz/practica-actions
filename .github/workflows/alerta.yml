@@ -1,4 +1,4 @@
-name: Notificación ntfy.sh
+name: Test y Notificación
 
 on:
   push:
@@ -6,11 +6,25 @@ on:
       - main
 
 jobs:
-  notify:
+  run-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Enviar alerta a ntfy
+      - name: Checkout de código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Ejecutar Test
+        run: node test.js
+
+      - name: Notificar Error en ntfy
+        if: failure()
         run: |
-          curl -d "🚀 ¡Nuevo push en el repositorio! El código se ha subido a la rama main." \
-               -H "Title: GitHub Alert - ${{ github.repository }}" \
+          curl -d "❌ El test de hola.js ha fallado en el repositorio ${{ github.repository }}. Revisa los logs de GitHub Actions." \
+               -H "Title: Pipeline Fallido" \
+               -H "Priority: urgent" \
+               -H "Tags: x,warning" \
                ntfy.sh/devops-itla
